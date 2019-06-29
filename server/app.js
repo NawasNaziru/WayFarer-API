@@ -1,4 +1,4 @@
-import dotenv from from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.load();
 import express from 'express';
 import path from 'path';
