@@ -6,7 +6,6 @@ import * as ctrlAuth from '../controllers/authentication'
 
 import * as ctrlTrips from '../controllers/trips';
 
-
 // signup route
 
 router.post('/users/auth/signin', ctrlAuth.login);
@@ -19,6 +18,6 @@ router.post('/trips', ctrlTrips.createTrip);
 
 
 // admin and user route
-router.get('/trips', ctrlTrips.viewAll);
+router.get('/trips', ctrlTrips.viewAllTrips);
 
 export default router;
