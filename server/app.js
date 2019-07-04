@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.load();
+dotenv.config();
 import express from 'express';
 import path from 'path';
 import logger from 'morgan';
@@ -7,53 +7,30 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import Debug from 'debug';
 const debug = Debug('Express4');
-import pg from 'pg';
 
 import  router from './routes/index';
 
 const app = express();
+
+const sendJSONresponse = (res, status, content) => {
+  res.status(status);
+  res.json(content);
+};
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'UI')));
-
 app.use('/api/v1', router);
 
-var config = {
-  user: 'postgres',
-  database: 'Banka', 
-  password: 'zazaa1992', 
-  port: 5432, 
-  max: 10, // max number of connection can be open to database
-  idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
-};
-	
-var pool = new pg.Pool(config);
- 
-app.get('/pool', (req, res, next) => {
-    pool.connect((err,client,done) => {
-       if(err){
-           console.log("not able to get connection due to " + err);
-           res.status(400).send(err);
-           return;
-       } 
-       client.query('SELECT * FROM student where id = $1', [1],(err,result) => {
-           done(); // closing the connection;
-           if(err){
-               console.log(err);
-               res.status(400).send(err);
-           }
-           res.status(200).send(result.rows);
-       });
-    });
+app.use((req, res) => {
+  sendJSONresponse(res, 404, {
+    status: 'error',
+    error: 'No such API exist here!'
+  })
 });
 
-app.use((req, res) => {
-  
-});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -63,11 +40,13 @@ app.use((req, res, next) => {
 });
 
 // error handlers
-// Catch unauthorised errors
+// Catch unauthorised errors e.g. due to altered token.
 app.use((err, req, res) => {
   if (err.name === 'UnauthorizedError') {
-    res.status(401);
-    res.json({ message: `${err.name}: ${err.message}` });
+    sendJSONresponse(res, 401, {
+      status: 'error',
+      error: 'Invalid token'
+    })
   }
 });
 
