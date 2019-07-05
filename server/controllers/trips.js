@@ -20,8 +20,91 @@ const config = {
 const pool = new pg.Pool(config);
 
 export const createTrip =  (req, res) => {
+  var isAdmin;
+  if(req.payload && req.payload.email){
+   pool.connect((err,client,done) => {
+     if(err){
+       sendJSONresponse(res, 500, {
+         status: 'error',
+         error: 'Could not connect to database'
+       })
+         return;
+     } 
  
-};
+     client.query('SELECT * FROM users where email = $1', [req.payload.email], (err,responseData) => {
+       done(); // closing the connection;
+       if(err){
+         sendJSONresponse(res, 500, {
+           status: 'error',
+           error: err.message
+         })
+           return;
+       }
+       if(responseData.rows.length === 0){
+         sendJSONresponse(res,404, {
+           status: 'error',
+           error: "User not found!"
+         } );
+         return;
+       }
+ 
+     isAdmin = responseData.rows[0].is_admin;
+ 
+     if(!isAdmin){
+       sendJSONresponse(res,403, {
+         status: 'error',
+         error: "Access denied. Sorry! You are not authorised to create a trip."
+       });
+       return;
+      }
+      return;
+   });
+ 
+    const busId = req.body.bus_id;
+    const origin = req.body.origin;
+    const destination = req.body.destination;
+    const tripDate = req.body.trip_date;
+    const fare = req.body.fare;
+    const status = req.body.status;
+ 
+    const query = {
+     text: 'INSERT INTO trips(bus_id, origin, destination, trip_date, fare, status) VALUES( $1, $2, $3, $4, $5, $6) RETURNING *',
+     values: [busId, origin, destination, tripDate, fare, status]
+   } 
+ 
+   client.query(query).then(responseData => {
+     if(responseData.rows.length === 0){
+       sendJSONresponse(res,500, {
+         status: 'error',
+         error: "Unexpected error encountered. Try again!"
+       } );
+       return;
+     }
+     sendJSONresponse(res, 201, {
+     status: 'success',
+     data: responseData.rows[0]  
+   });
+   return;
+ }
+   ).catch(e => sendJSONresponse(res, 500, {
+     status: 'error',
+     error: e.message
+   })
+   );
+    return;
+   });
+    return;
+  }
+ 
+  else{
+   sendJSONresponse(res,404, {
+     status: 'error',
+     error: "User not found. Sign in or sign up again"
+   });
+   return;
+  }
+ };
+ 
 
 export const viewAllTrips = (req, res) => {
   
