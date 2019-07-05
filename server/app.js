@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import dotenv from from 'dotenv';
+dotenv.load();
 import express from 'express';
 import path from 'path';
 import logger from 'morgan';
@@ -12,25 +12,18 @@ import  router from './routes/index';
 
 const app = express();
 
-const sendJSONresponse = (res, status, content) => {
-  res.status(status);
-  res.json(content);
-};
-
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use(express.static(path.join(__dirname, 'UI')));
+
 app.use('/api/v1', router);
 
 app.use((req, res) => {
-  sendJSONresponse(res, 404, {
-    status: 'error',
-    error: 'No such API exist here!'
-  })
+  res.sendFile(path.join(__dirname, 'UI', 'index.html'));
 });
-
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -40,13 +33,11 @@ app.use((req, res, next) => {
 });
 
 // error handlers
-// Catch unauthorised errors e.g. due to altered token.
+// Catch unauthorised errors
 app.use((err, req, res) => {
   if (err.name === 'UnauthorizedError') {
-    sendJSONresponse(res, 401, {
-      status: 'error',
-      error: 'Invalid token'
-    })
+    res.status(401);
+    res.json({ message: `${err.name}: ${err.message}` });
   }
 });
 
