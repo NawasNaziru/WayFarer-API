@@ -106,9 +106,74 @@ export const createTrip =  (req, res) => {
  };
  
 
-export const viewAllTrips = (req, res) => {
-  
+ export const viewAllTrips = (req, res) => {
+  if(req.payload && req.payload.email){
+   pool.connect((err,client,done) => {
+     if(err){
+       sendJSONresponse(res, 500, {
+         status: 'error',
+         error: 'Could not connect to database'
+       })
+         return;
+     } 
+ 
+     client.query('SELECT * FROM users where email = $1', [req.payload.email], (err,responseData) => {
+       done(); // closing the connection;
+       
+       if(responseData.rows.length === 0){
+        sendJSONresponse(res,404, {
+          status: 'error',
+          error: "User not found!"
+        } );
+        return;
+      }
+
+       if(err){
+         sendJSONresponse(res, 500, {
+           status: 'error',
+           error: err.message
+         })
+           return;
+       }
+
+   });
+
+   client.query('SELECT * FROM trips', (err,responseData) => {
+    done(); // closing the connection;
+
+    if(err){
+      sendJSONresponse(res, 500, {
+        status: 'error',
+        error: err.message
+      })
+        return;
+    }
+
+    if(responseData.rows.length === 0){
+      sendJSONresponse(res,404, {
+        status: 'error',
+        error: "No trip found!"
+      } );
+      return;
+    }
+    sendJSONresponse(res, 200, {
+      status: 'success',
+      data: responseData.rows
+      
+    })
+});
+
+  })
+}
+else{
+   sendJSONresponse(res,401, {
+     status: 'error',
+     error: "User not found. Sign in or sign up again"
+   });
+  return;
+  }
  };
+
 
 const Num_of_handlers = 3;
 export default Num_of_handlers;
