@@ -40,7 +40,7 @@ export const signup = (req, res) => {
 
   const generateJwt = id => {
     const expiry = new Date();
-    expiry.setDate(expiry.getDate() + 27);
+    expiry.setDate(expiry.getDate() + 7);
   
     return jwt.sign({
       _id: id,
@@ -101,7 +101,83 @@ export const signup = (req, res) => {
  });
 }
 
-
 export const signin = (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    sendJSONresponse(res, 400, {
+      status: 'error',
+      error: 'Requires your email and password',
+    });
+    return;
+  }
 
-};
+  const generateJwt = id => {
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 7);
+  
+    return jwt.sign({
+      _id: id,
+      email: req.body.email,
+      name: req.body.firstName,
+      exp: parseInt((expiry.getTime() / 1000), 10),
+    }, process.env.JWT_SECRET); // DO NOT KEEP YOUR SECRET IN THE CODE!
+  };
+
+  const isValidPassword = (password, storedHash, storedSalt) => {
+     return bcrypt.hashSync(password, storedSalt) === storedHash;
+  }
+
+  pool.connect((err,client,done) => {
+    if(err){
+      sendJSONresponse(res, 500, {
+        status: 'error',
+        error: 'Could not connect to database'
+      })
+        return;
+    } 
+
+    client.query('SELECT * FROM users where email = $1', [req.body.email], (err,responseData) => {
+      done(); // closing the connection;
+      if(err){
+        sendJSONresponse(res, 500, {
+          status: 'error',
+          error: err.message
+        })
+          return;
+      }
+      if(responseData.rows.length === 0){
+        sendJSONresponse(res,404, {
+          status: 'error',
+          error: "Invalid email. User not found. Sign up first!"
+        } );
+        return;
+      }
+      
+      const userId = responseData.rows[0].user_id;
+      const token = generateJwt(userId);
+
+      const savedSalt = responseData.rows[0].salt;
+      const savedHash = responseData.rows[0].hash;
+      
+      if(!isValidPassword(req.body.password, savedHash, savedSalt)){
+        sendJSONresponse(res,404, {
+          status: 'error',
+          error: "Invalid password. Provide your correct password"
+        } );
+        return;
+      }
+
+      sendJSONresponse(res, 200, {
+      status: 'success',
+      data: {
+        user_id: responseData.rows[0].user_id,
+        is_admin: responseData.rows[0].is_admin,
+        token: token,
+        email: responseData.rows[0].email,
+        first_name: responseData.rows[0].first_name,
+        last_name: responseData.rows[0].last_name, 
+      }
+    })
+  });
+  });
+
+ };
