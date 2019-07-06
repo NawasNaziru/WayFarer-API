@@ -40,7 +40,7 @@ export const signup = (req, res) => {
 
   const generateJwt = id => {
     const expiry = new Date();
-    expiry.setDate(expiry.getDate() + 7);
+    expiry.setDate(expiry.getDate() + 27);
   
     return jwt.sign({
       _id: id,
