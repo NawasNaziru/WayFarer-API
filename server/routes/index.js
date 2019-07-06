@@ -13,10 +13,11 @@ import * as ctrlAuth from '../controllers/authentication';
 
 import * as ctrlTrips from '../controllers/trips';
 
+
 import * as ctrlDocs from '../controllers/docs';
 
 // api documentation route
-router.get('/docs', ctrlDocs.docV1)
+router.get('/docs', ctrlDocs.docV1);
 
 // signup route
 
