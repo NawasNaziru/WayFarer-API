@@ -5,8 +5,6 @@ const { expect } = chai;
 import chaiHttp from 'chai-http';
 import app from '../server/app.js';
 
-const accountNumber = 2000000000;
-
 chai.use(chaiHttp);
 describe('WayFarer API endpoints', () => {
   describe('User Operations', () => {
