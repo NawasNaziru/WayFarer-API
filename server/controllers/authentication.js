@@ -127,7 +127,7 @@ export const signin = (req, res) => {
 
   pool.connect((err,client,done) => {
     if(err){
-      sendJSONresponse(res, 500, {
+      sendJSONresponse(res, 501, {
         status: 'error',
         error: 'Could not connect to database'
       })
