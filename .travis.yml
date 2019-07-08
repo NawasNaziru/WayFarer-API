@@ -4,7 +4,7 @@ node_js:
 services:
   -postgresql
 addons:
-  postgresql: "10"
+  postgresql: "9.6"
 before_install:
   - psql -c 'CREATE DATABASE wayfarer_api_db;' -U postgres
   - psql -c 'CREATE TABLE users(user_id SERIAL PRIMARY KEY, is_admin BOOLEAN, email TEXT not null UNIQUE, first_name TEXT not null, last_name TEXT not null, salt TEXT not null UNIQUE, hash TEXT not null UNIQUE);' -U postgres
