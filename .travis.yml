@@ -11,3 +11,4 @@ before_install:
   - psql -c 'CREATE TABLE buses(bus_id SERIAL PRIMARY KEY, number_plate TEXT not null UNIQUE, manufacturer TEXT not null, model  TEXT not null, year VARCHAR(4) not null, capacity INT not null);' -U postgres
   - psql -c 'CREATE TABLE trips(trip_id SERIAL PRIMARY KEY, bus_id INTEGER REFERENCES buses(bus_id) , origin TEXT not null, destination  TEXT not null, trip_date TIMESTAMP not null, fare REAL not null, status TEXT not null );' -U postgres
   - psql -c 'CREATE TABLE bookings(booking_id SERIAL, trip_id INT REFERENCES trips(trip_id), user_id INT REFERENCES users(user_id), created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id));' -U postgres
+
