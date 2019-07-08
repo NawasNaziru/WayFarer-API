@@ -10,11 +10,10 @@ const sendJSONresponse = (res, status, content) => {
 
 const config = {
   user: 'postgres',
-  database: 'wayfarer-api-db' || 'wayfarer_api_db', 
-  password: process.env.password || "", 
-  port: 5432, 
-  max: 10, // max number of connection can be open to database
-  idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
+  host: '127.0.0.1',
+  database: 'wayfarer_api_db', 
+  password: '', 
+  port: 5432,
 };
 	
 const pool = new pg.Pool(config);
