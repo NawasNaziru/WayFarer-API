@@ -67,7 +67,7 @@ pool.connect((err,client,done) => {
       console.log(result);
   });
 
-  client.query('CREATE TABLE bookings(booking_id SERIAL, trip_id INT REFERENCES trips(trip_id), user_id INT REFERENCES users(user_id), created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id))', (err,result) => {
+  client.query('CREATE TABLE bookings(booking_id SERIAL, trip_id INT REFERENCES trips(trip_id), user_id INT REFERENCES users(user_id), seat_number not null UNIQUE, created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id))', (err,result) => {
     done(); // closing the connection;
     if(err){
         console.log(err);
