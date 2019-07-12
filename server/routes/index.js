@@ -30,6 +30,7 @@ router.post('/users/auth/signin', ctrlAuth.signin);
 // trips routes
 router.post('/trips', auth, ctrlTrips.createTrip);
 router.get('/trips', auth, ctrlTrips.viewAllTrips);
+router.patch('/trips/:tripId', auth, ctrlTrips.cancelTrip);
 
 // bookings routes
 router.post('/bookings', auth, ctrlBookings.createBooking);
