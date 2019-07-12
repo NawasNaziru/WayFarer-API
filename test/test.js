@@ -159,5 +159,32 @@ describe('WayFarer API endpoints', () => {
 
             done();
         });
+
+        it('Should get bookings', (done) => {
+            chai.request(app).keepOpen()
+                .get('/api/v1/bookings')
+                .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.be.json;
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('data');
+                    res.body.should.have.property('status');
+                    res.body.data.should.be.a('array');
+                    res.body.status.should.be.a('string');
+                    res.body.data[0].should.have.property('booking_id');
+                    res.body.data[0].should.have.property('user_id');
+                    res.body.data[0].should.have.property('bus_id');
+                    res.body.data[0].should.have.property('trip_id');
+                    res.body.data[0].should.have.property('trip_date');
+                    res.body.data[0].should.have.property('seat_number');
+                    res.body.data[0].should.have.property('first_name');
+                    res.body.data[0].should.have.property('last_name');
+                    res.body.data[0].should.have.property('email');
+                });
+
+            done();
+        });
     });
 });
