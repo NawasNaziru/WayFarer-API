@@ -150,6 +150,23 @@ export const viewAllTrips = (req, res) => {
                                     })
                                 }
                             }
+                            else if (req.query.filterByDestination) {
+                                const tripsByDestination = await client.query('SELECT * FROM trips WHERE destination = $1', [req.query.filterByDestination]);
+                                if (tripsByDestination.rows.length === 0) {
+                                    sendJSONresponse(res, 404, {
+                                        status: 'error',
+                                        error: "No trip found!"
+                                    });
+                                    return;
+                                } else {
+                                    sendJSONresponse(res, 200, {
+                                        status: 'success',
+                                        data: tripsByDestination.rows
+
+                                    })
+                                }
+                                return;
+                            }
                             else {
                                 const tripsData = await client.query('SELECT * FROM trips');
 
