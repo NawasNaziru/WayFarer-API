@@ -33,5 +33,6 @@ router.get('/trips', auth, ctrlTrips.viewAllTrips);
 
 // bookings routes
 router.post('/bookings', auth, ctrlBookings.createBooking);
+router.get('/bookings', auth, ctrlBookings.viewBookings);
 
 export default router;

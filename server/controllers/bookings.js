@@ -28,7 +28,7 @@ export const createBooking = (req, res) => {
 
         sendJSONresponse(res, 400, {
             status: 'error',
-            error: 'origin, destination, status, fare, trip_date and bus_id are all required'
+            error: 'trip_id and seat_number are all required'
         });
         return;
     } 
@@ -109,3 +109,86 @@ export const createBooking = (req, res) => {
     }
 
 }
+
+export const viewBookings = (req, res) => {
+    var isAdmin;
+    if (req.payload && req.payload.email) {
+        pool.connect((err, client, done) => {
+            if (err) {
+                sendJSONresponse(res, 500, {
+                    status: 'error',
+                    error: 'Could not connect to database'
+                })
+                return;
+            } else {
+                (async () => {
+                    try {
+                        const userData = await client.query('SELECT * FROM users where email = $1', [req.payload.email]);
+                        if (userData.rows.length === 0) {
+                            sendJSONresponse(res, 404, {
+                                status: 'error',
+                                error: "User not found!"
+                            });
+                            return;
+                        } else {
+                            isAdmin = userData.rows[0].is_admin;
+
+                            if (!isAdmin) {
+                                const bookingsData = await client.query('SELECT bookings.booking_id, bookings.user_id, bookings.trip_id, trips.bus_id, trips.trip_date, bookings.seat_number, users.first_name, users.last_name, users.email, bookings.created_on FROM bookings INNER JOIN trips ON bookings.trip_id = trips.trip_id  INNER JOIN users ON bookings.user_id = users.user_id WHERE bookings.user_id = $1', [userData.rows[0].user_id]);
+
+                                if (bookingsData.rows.length === 0) {
+                                    sendJSONresponse(res, 404, {
+                                        status: 'error',
+                                        error: "No booking found!"
+                                    });
+                                    return;
+                                } else {
+                                    sendJSONresponse(res, 200, {
+                                        status: 'success',
+                                        data: bookingsData.rows
+                                    });
+                                    return;
+                                }
+                                return;
+                            } else {
+                                const bookings = await client.query('SELECT bookings.booking_id, bookings.user_id, bookings.trip_id, trips.bus_id, trips.trip_date, bookings.seat_number, users.first_name, users.last_name, users.email, bookings.created_on FROM bookings INNER JOIN trips ON bookings.trip_id = trips.trip_id  INNER JOIN users ON bookings.user_id = users.user_id');
+
+                                if (bookings.rows.length === 0) {
+                                    sendJSONresponse(res, 404, {
+                                        status: 'error',
+                                        error: "No booking found!"
+                                    });
+                                    return;
+                                } else {
+                                    sendJSONresponse(res, 200, {
+                                        status: 'success',
+                                        data: bookings.rows
+
+                                    });
+                                }
+
+                            }
+                            return;
+                        }
+                    } finally {
+                        client.release();
+                    }
+                })().catch(err => {
+                    sendJSONresponse(res, 500, {
+                        status: 'error',
+                        error: err.message
+                    });
+                    return;
+                });
+            }
+            return;
+        });
+        return;
+    } else {
+        sendJSONresponse(res, 401, {
+            status: 'error',
+            error: "User not found. Sign in or sign up again"
+        });
+        return;
+    }
+};
