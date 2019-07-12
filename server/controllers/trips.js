@@ -178,3 +178,88 @@ export const viewAllTrips = (req, res) => {
     }
     return;
 };
+
+export const cancelTrip = (req, res) => {
+    var isAdmin;
+    if (req.payload && req.payload.email) {
+        if (!req.params.tripId) {
+            sendJSONresponse(res, 400, {
+                status: 400,
+                error: 'You have not specified the trip in the params!',
+            });
+            return;
+        } else {
+            pool.connect((err, client, done) => {
+                if (err) {
+                    sendJSONresponse(res, 500, {
+                        status: 'error',
+                        error: 'Could not connect to database'
+                    })
+                    return;
+                } else {
+                    (async () => {
+                        try {
+                            const userData = await client.query('SELECT * FROM users where email = $1', [req.payload.email]);
+
+                            if (userData.rows.length === 0) {
+                                sendJSONresponse(res, 404, {
+                                    status: 'error',
+                                    error: "User not found!"
+                                });
+                                return;
+                            } else {
+                                isAdmin = userData.rows[0].is_admin;
+
+                                if (!isAdmin) {
+                                    sendJSONresponse(res, 403, {
+                                        status: 'error',
+                                        error: "Access denied. Sorry! You are not permitted to cancel a trip."
+                                    });
+                                    return;
+                                } else {
+
+                                    const query = {
+                                        text: 'UPDATE trips SET status = $1 WHERE trip_id = $2 RETURNING *',
+                                        values: ['cancelled', req.params.tripId]
+                                    }
+
+                                    const result = await client.query(query);
+
+                                    if (result.rows.length === 0) {
+                                        sendJSONresponse(res, 404, {
+                                            status: 'error',
+                                            error: "Trip not found!"
+                                        });
+                                        return;
+                                    } else {
+                                        sendJSONresponse(res, 200, {
+                                            status: 'success',
+                                            data: 'Trip cancelled successfully'
+                                        });
+                                        return;
+                                    }
+                                }
+                            }
+                        } finally {
+                            client.release();
+                        }
+                    })().catch(err => {
+                        sendJSONresponse(res, 500, {
+                            status: 'error',
+                            error: err.message
+                        });
+                        return;
+                    });
+                    return;
+                }
+            });
+        }
+    } else {
+        sendJSONresponse(res, 404, {
+            status: 'error',
+            error: "User not found. Sign in or sign up again"
+        });
+        return;
+    }
+}
+

@@ -92,6 +92,26 @@ describe('WayFarer API endpoints', () => {
 
             done();
         });
+
+        it('Should delete booking', (done) => {
+            chai.request(app).keepOpen()
+                .delete('/api/v1/bookings/46')
+                .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.be.json;
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('data');
+                    res.body.should.have.property('status');
+                    res.body.status.should.be.a('string');
+                    res.body.data.should.be.a('string');
+                    res.body.status.should.equal('success')
+                    res.body.data.should.equal('Booking deleted successfully!')
+                });
+
+            done();
+        });
     });
 
     describe('Admin operations', () => {
@@ -121,6 +141,26 @@ describe('WayFarer API endpoints', () => {
                     res.body.data.trip_date.should.equal('08-08-2019');
                     res.body.data.status.should.equal('cancelled');
                     res.body.data.fare.should.equal(20080.95);
+                });
+
+            done();
+        });
+
+        it('Should cancel a trip', (done) => {
+            chai.request(app).keepOpen()
+                .patch('/api/v1/trips/46')
+                .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.be.json;
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('data');
+                    res.body.should.have.property('status');
+                    res.body.status.should.be.a('string');
+                    res.body.data.should.be.a('string');
+                    res.body.status.should.equal('success')
+                    res.body.data.should.equal('Trip cancelled successfully!')
                 });
 
             done();
@@ -175,25 +215,6 @@ describe('WayFarer API endpoints', () => {
                     res.body.data[0].should.have.property('first_name');
                     res.body.data[0].should.have.property('last_name');
                     res.body.data[0].should.have.property('email');
-                });
-
-            done();
-        });
-
-        it('Should delete booking', (done) => {
-            chai.request(app).keepOpen()
-                .delete('/api/v1/bookings/46')
-                .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
-                .end((err, res) => {
-                    expect(err).to.be.null;
-                    expect(res).to.be.json;
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property('data');
-                    res.body.should.have.property('status');
-                    res.body.data.should.be.a('array');
-                    res.body.status.should.be.a('string');
-                    res.body.data.should.equal('Booking deleted successfully!')
                 });
 
             done();
