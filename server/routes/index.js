@@ -36,6 +36,7 @@ router.patch('/trips/:tripId', auth, ctrlTrips.cancelTrip);
 router.post('/bookings', auth, ctrlBookings.createBooking);
 router.get('/bookings', auth, ctrlBookings.viewBookings);
 router.delete('/bookings/:bookingId', auth, ctrlBookings.deleteBooking);
+router.patch('/bookings/:bookingId', auth, ctrlBookings.changeSeat);
 
 
 export default router;
