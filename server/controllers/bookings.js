@@ -192,3 +192,75 @@ export const viewBookings = (req, res) => {
         return;
     }
 };
+
+export const deleteBooking = (req, res) => {
+    if (req.payload && req.payload.email) {
+        if (!req.params.bookingId) {
+            sendJSONresponse(res, 400, {
+                status: 400,
+                error: 'You have not specified the trip in the params!',
+            });
+            return;
+        } else {
+            pool.connect((err, client, done) => {
+                if (err) {
+                    sendJSONresponse(res, 500, {
+                        status: 'error',
+                        error: 'Could not connect to database'
+                    })
+                    return;
+                } else {
+                    (async () => {
+                        try {
+                            const userData = await client.query('SELECT * FROM users where email = $1', [req.payload.email]);
+
+                            if (userData.rows.length === 0) {
+                                sendJSONresponse(res, 404, {
+                                    status: 'error',
+                                    error: "User not found!"
+                                });
+                                return;
+                            } else {
+
+                                const query = {
+                                    text: 'DELETE FROM bookings WHERE booking_id = $1 AND user_id = $2 RETURNING *',
+                                    values: [req.params.bookingId, userData.rows[0].user_id]
+                                }
+
+                                const result = await client.query(query);
+
+                                if (result.rows.length === 0) {
+                                    sendJSONresponse(res, 400, {
+                                        status: 'error',
+                                        error: "The booking doesn't belong to you or it doesn't exist!"
+                                    });
+                                    return;
+                                } else {
+                                    sendJSONresponse(res, 200, {
+                                        status: 'success',
+                                        data: "Booking deleted successfully!"
+                                    });
+                                    return;
+                                }
+                            }
+                        } finally {
+                            client.release();
+                        }
+                    })().catch(err => {
+                        sendJSONresponse(res, 500, {
+                            status: 'error',
+                            error: err.message
+                        });
+                        return;
+                    });
+                }
+            })
+        }
+    } else {
+        sendJSONresponse(res, 401, {
+            status: 'error',
+            error: "User not found. Sign in or sign up again"
+        });
+        return;
+    }
+};

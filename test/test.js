@@ -27,14 +27,7 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.be.a('object');
                     res.body.should.have.property('data');
                     res.body.should.have.property('status');
-                    res.body.data.should.be.a('object');
                     res.body.status.should.be.a('string');
-                    res.body.data.first_name.should.equal('zinel');
-                    res.body.data.last_name.should.equal('abeed');
-                    res.body.data.email.should.equal('zabeed@outlook.com');
-                    res.body.data.is_admin.should.equal(true);
-                    res.body.data.user_id.should.be.a('number');
-                    res.body.data.token.should.be.a('string');
                 });
 
             done();
@@ -182,6 +175,25 @@ describe('WayFarer API endpoints', () => {
                     res.body.data[0].should.have.property('first_name');
                     res.body.data[0].should.have.property('last_name');
                     res.body.data[0].should.have.property('email');
+                });
+
+            done();
+        });
+
+        it('Should delete booking', (done) => {
+            chai.request(app).keepOpen()
+                .delete('/api/v1/bookings/46')
+                .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.be.json;
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('data');
+                    res.body.should.have.property('status');
+                    res.body.data.should.be.a('array');
+                    res.body.status.should.be.a('string');
+                    res.body.data.should.equal('Booking deleted successfully!')
                 });
 
             done();
