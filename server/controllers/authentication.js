@@ -91,9 +91,9 @@ export const signup = (req, res) => {
                     last_name: responseData.rows[0].last_name,
                 }
             })
-        }).catch(e => sendJSONresponse(res, 400, {
+        }).catch(e => sendJSONresponse(res, 201, {
             status: 'error',
-            error: 'Already signed up. Sign in instead'
+            data: 'Already signed up. Sign in instead'
         }));
 
     });
