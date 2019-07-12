@@ -133,6 +133,24 @@ export const viewAllTrips = (req, res) => {
                         const usersData = await client.query('SELECT * FROM users where email = $1', [req.payload.email]);
 
                         if (usersData.rows.length > 0) {
+                            if (req.query.filterByOrigin) {
+                                const tripsDataByOrigin = await client.query('SELECT * FROM trips WHERE origin = $1', [req.query.filterByOrigin]);
+
+                                if (tripsDataByOrigin.rows.length === 0) {
+                                    sendJSONresponse(res, 404, {
+                                        status: 'error',
+                                        error: "No trip found!"
+                                    });
+                                    return;
+                                } else {
+                                    sendJSONresponse(res, 200, {
+                                        status: 'success',
+                                        data: tripsDataByOrigin.rows
+
+                                    })
+                                }
+                            }
+                            else {
                                 const tripsData = await client.query('SELECT * FROM trips');
 
                                 if (tripsData.rows.length === 0) {
@@ -149,6 +167,7 @@ export const viewAllTrips = (req, res) => {
                                     });
                                 }
                                 return;
+                            }
                             
                         } else {
                             sendJSONresponse(res, 404, {
