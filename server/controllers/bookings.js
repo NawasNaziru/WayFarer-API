@@ -28,7 +28,7 @@ export const createBooking = (req, res) => {
 
         sendJSONresponse(res, 400, {
             status: 'error',
-            error: 'origin, destination, status, fare, trip_date and bus_id are all required'
+            error: 'trip_id and seat_number are all required'
         });
         return;
     } 
