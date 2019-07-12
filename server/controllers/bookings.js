@@ -264,3 +264,86 @@ export const deleteBooking = (req, res) => {
         return;
     }
 };
+
+
+export const changeSeat = (req, res) => {
+    if (!req.body.seat_number) {
+         sendJSONresponse(res, 400, {
+            status: 'error',
+            error: 'seat_number is required'
+        });
+        return;
+    }
+    
+    else if (req.payload && req.payload.email) {
+        if (!req.params.bookingId) {
+            sendJSONresponse(res, 400, {
+                status: 400,
+                error: 'You have not specified the booking in the params!',
+            });
+            return;
+        } else {
+            pool.connect((err, client, done) => {
+                if (err) {
+                    sendJSONresponse(res, 500, {
+                        status: 'error',
+                        error: 'Could not connect to database'
+                    })
+                    return;
+                } else {
+                    (async () => {
+                        try {
+                            const userData = await client.query('SELECT * FROM users where email = $1', [req.payload.email]);
+                            if (userData.rows.length === 0) {
+                                sendJSONresponse(res, 404, {
+                                    status: 'error',
+                                    error: "User not found!"
+                                });
+                                return;
+                            } else {
+                                const query = {
+                                    text: 'UPDATE bookings SET seat_number = $1 WHERE booking_id = $2 AND user_id = $3 RETURNING *',
+                                    values: [req.body.seat_number, req.params.bookingId, userData.rows[0].user_id]
+                                }
+
+                                const response = await client.query(query);
+
+                                if (response.rows.length === 0) {
+                                    sendJSONresponse(res, 500, {
+                                        status: 'error',
+                                        error: "The booking doesn't belong to you or it doesn't exist!!"
+                                    });
+                                    return;
+                                } else {
+                                    sendJSONresponse(res, 201, {
+                                        status: 'success',
+                                        data: 'Seat changed successfully'
+                                    });
+                                    return;
+                                }
+                                return;
+                            }
+                        } finally {
+                            client.release();
+                        }
+                    })().catch(err => {
+                        sendJSONresponse(res, 500, {
+                            status: 'error',
+                            error: err.message
+                        });
+                        return;
+                    });
+                }
+            });
+
+            return;
+        }
+    } else {
+        sendJSONresponse(res, 404, {
+            status: 'error',
+            error: "User not found. Sign in or sign up again"
+        });
+        return;
+    }
+};
+

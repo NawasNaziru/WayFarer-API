@@ -21,7 +21,7 @@ export const createTrip = (req, res) => {
     var isAdmin;
     if (!req.body.origin || !req.body.destination || !req.body.status || !req.body.fare || !req.body.trip_date || !req.body.bus_id) {
 
-        sendJSONresponse(res, 500, {
+        sendJSONresponse(res, 400, {
             status: 'error',
             error: 'origin, destination, status, fare, trip_date and bus_id are all required'
         });
