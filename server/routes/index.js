@@ -22,10 +22,10 @@ router.get('/docs', ctrlDocs.docV1);
 
 // signup route
 
-router.post('/users/auth/signup', ctrlAuth.signup);
+router.post('/auth/signup', ctrlAuth.signup);
 
 // sign in route
-router.post('/users/auth/signin', ctrlAuth.signin);
+router.post('/auth/signin', ctrlAuth.signin);
 
 // trips routes
 router.post('/trips', auth, ctrlTrips.createTrip);

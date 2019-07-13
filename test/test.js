@@ -12,7 +12,7 @@ describe('WayFarer API endpoints', () => {
     describe('User Operations', () => {
         it('Should sign up a user', (done) => {
             chai.request(app).keepOpen()
-                .post('/api/v1/users/auth/signup')
+                .post('/api/v1/auth/signup')
                 .send({
                     first_name: 'zinel',
                     last_name: 'abeed',
@@ -35,7 +35,7 @@ describe('WayFarer API endpoints', () => {
 
         it('Should sign in a user', (done) => {
             chai.request(app).keepOpen()
-                .post('/api/v1/users/auth/signin')
+                .post('/api/v1/auth/signin')
                 .send({
                     email: 'zabeed@outlook.com',
                     password: 'tycxcv&2',
