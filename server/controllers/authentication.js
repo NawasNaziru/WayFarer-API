@@ -55,11 +55,10 @@ export const signup = (req, res) => {
     const firstName = req.body.first_name;
     const lastName = req.body.last_name;
     const email = req.body.email;
-    const isAdmin = req.body.is_admin === 'true' ? true : false; //convert string to boolean.
 
     const query = {
-        text: 'INSERT INTO users(is_admin, email, first_name, last_name, salt, hash) VALUES( $1, $2, $3, $4, $5, $6) RETURNING *',
-        values: [isAdmin, email, firstName, lastName, salt, hash]
+        text: 'INSERT INTO users(email, first_name, last_name, salt, hash) VALUES( $1, $2, $3, $4, $5) RETURNING *',
+        values: [email, firstName, lastName, salt, hash]
     }
 
     pool.connect((err, client, done) => {

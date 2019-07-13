@@ -18,7 +18,6 @@ describe('WayFarer API endpoints', () => {
                     last_name: 'abeed',
                     email: 'zabeed@outlook.com',
                     password: 'tycxcv&2',
-                    is_admin: true,
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -52,7 +51,6 @@ describe('WayFarer API endpoints', () => {
                     res.body.data.first_name.should.equal('zinel');
                     res.body.data.last_name.should.equal('abeed');
                     res.body.data.email.should.equal('zabeed@outlook.com');
-                    res.body.data.is_admin.should.equal(true);
                     res.body.data.user_id.should.be.a('number');
                     res.body.data.token.should.be.a('string');
                 });
