@@ -13,7 +13,14 @@ const config = {
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
 
-const pool = new pg.Pool(config);
+var pool = new pg.Pool(config);
+
+if(process.env.NODE_ENV === 'production'){
+    pool = new pg.Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: true,
+    })
+  }
 
 pool.connect((err, client, done) => {
     if (err) {

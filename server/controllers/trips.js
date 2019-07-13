@@ -1,6 +1,7 @@
 ﻿import dotenv from 'dotenv';
 dotenv.config();
 import pg from 'pg';
+
 // Predefined generic function for server response in feature modules
 const sendJSONresponse = (res, status, content) => {
     res.status(status);
@@ -15,7 +16,16 @@ const config = {
     port: 5432,
 };
 
-const pool = new pg.Pool(config);
+
+
+var pool = new pg.Pool(config);
+
+if(process.env.NODE_ENV === 'production'){
+  pool = new pg.Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+  })
+}
 
 export const createTrip = (req, res) => {
     var isAdmin;

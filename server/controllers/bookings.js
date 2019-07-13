@@ -21,7 +21,14 @@ const config = {
 };
 
 
-const pool = new pg.Pool(config);
+var pool = new pg.Pool(config);
+
+if(process.env.NODE_ENV === 'production'){
+    pool = new pg.Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: true,
+    })
+  }
 
 export const createBooking = (req, res) => {
     if (!req.body.trip_id) {
