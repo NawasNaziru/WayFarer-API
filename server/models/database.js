@@ -1,4 +1,4 @@
-﻿require('dotenv').load();
+require('dotenv').load();
 const pg = require('pg');
 const express = require('express');
 
@@ -28,7 +28,7 @@ pool.connect((err, client, done) => {
         return;
     }
 
-    client.query('CREATE TABLE users(user_id SERIAL PRIMARY KEY, is_admin BOOLEAN not null DEFAULT = $1, email TEXT not null UNIQUE, first_name TEXT not null, last_name TEXT not null, salt TEXT not null UNIQUE, hash TEXT not null UNIQUE)', [true], (err, result) => {
+    client.query('CREATE TABLE users(user_id SERIAL PRIMARY KEY, is_admin BOOLEAN not null DEFAULT = $1, email TEXT not null UNIQUE, first_name TEXT not null, last_name TEXT not null, salt TEXT not null UNIQUE, hash TEXT not null UNIQUE)', [false], (err, result) => {
         done(); // closing the connection;
         if (err) {
             console.log(err);
