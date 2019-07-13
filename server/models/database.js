@@ -38,7 +38,7 @@ pool.connect((err, client, done) => {
         console.log(result);
     });
 
-    client.query('CREATE TABLE trips(trip_id SERIAL PRIMARY KEY, bus_id INTEGER REFERENCES buses(bus_id) , origin TEXT not null, destination  TEXT not null, trip_date TIMESTAMP not null, fare REAL not null, status TEXT not null )', (err, result) => {
+    client.query('CREATE TABLE trips(trip_id SERIAL PRIMARY KEY, bus_id INTEGER REFERENCES buses(bus_id) , origin TEXT not null, destination  TEXT not null, trip_date TIMESTAMP not null, fare REAL not null, status TEXT DEFAULT = $1 )', ['active'], (err, result) => {
         done(); // closing the connection;
         if (err) {
             console.log(err);
@@ -46,7 +46,7 @@ pool.connect((err, client, done) => {
         console.log(result);
     });
 
-    client.query('CREATE TABLE bookings(booking_id SERIAL, trip_id INT REFERENCES trips(trip_id), user_id INT REFERENCES users(user_id), seat_number INT not null, created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id))', (err, result) => {
+    client.query('CREATE TABLE bookings(booking_id SERIAL, trip_id INT REFERENCES trips(trip_id), user_id INT REFERENCES users(user_id), seat_number SERIAL, created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id))', (err, result) => {
         done(); // closing the connection;
         if (err) {
             console.log(err);

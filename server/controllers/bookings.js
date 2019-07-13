@@ -24,11 +24,11 @@ const config = {
 const pool = new pg.Pool(config);
 
 export const createBooking = (req, res) => {
-    if (!req.body.trip_id || !req.body.seat_number) {
+    if (!req.body.trip_id) {
 
         sendJSONresponse(res, 400, {
             status: 'error',
-            error: 'trip_id and seat_number are all required'
+            error: 'trip_id is required'
         });
         return;
     } 
@@ -55,12 +55,11 @@ export const createBooking = (req, res) => {
 
                             const tripId = req.body.trip_id;
                             const userId = req.payload._id;
-                            const seatNumber = req.body.seat_number;
                             const createdOn = timeStamp();
 
                             const query = {
-                                text: 'INSERT INTO bookings(trip_id, user_id, seat_number, created_on) VALUES( $1, $2, $3, $4) RETURNING *',
-                                values: [tripId, userId, seatNumber, createdOn]
+                                text: 'INSERT INTO bookings(trip_id, user_id, created_on) VALUES( $1, $2, $3) RETURNING *',
+                                values: [tripId, userId, createdOn]
                             }
 
                             const bookingInserted = await client.query(query);
