@@ -289,7 +289,9 @@ export const cancelTrip = (req, res) => {
                                     } else {
                                         sendJSONresponse(res, 200, {
                                             status: 'success',
-                                            data: 'Trip cancelled successfully'
+                                            data: {
+                                               message: 'Trip cancelled successfully'
+                                            }
                                         });
                                         return;
                                     }

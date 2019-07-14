@@ -89,7 +89,17 @@ export const createBooking = (req, res) => {
                                 } else {
                                     sendJSONresponse(res, 201, {
                                         status: 'success',
-                                        data: bookingData.rows[0]
+                                        data: {
+                                            id: bookingData.rows[0].booking_id,
+                                            user_id: bookingData.rows[0].user_id,
+                                            trip_id: bookingData.rows[0].trip_id,
+                                            bus_id: bookingData.rows[0].bus_id,
+                                            trip_date: bookingData.rows[0].trip_date,
+                                            seat_number: bookingData.rows[0].seat_number,
+                                            first_name: bookingData.rows[0].first_name,
+                                            last_name: bookingData.rows[0].last_name,
+                                            email: bookingData.rows[0].email,
+                                        }
                                     });
                                     return;
                                 }
@@ -244,7 +254,9 @@ export const deleteBooking = (req, res) => {
                                 } else {
                                     sendJSONresponse(res, 200, {
                                         status: 'success',
-                                        data: "Booking deleted successfully!"
+                                        data: {
+                                            message: "Booking deleted successfully!"
+                                        }
                                     });
                                     return;
                                 }
@@ -323,7 +335,9 @@ export const changeSeat = (req, res) => {
                                 } else {
                                     sendJSONresponse(res, 201, {
                                         status: 'success',
-                                        data: 'Seat changed successfully'
+                                        data: {
+                                         message: 'Seat changed successfully'
+                                        }
                                     });
                                     return;
                                 }
