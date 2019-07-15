@@ -2,8 +2,8 @@ language: node_js
 node_js:
   - "10"
 env:
- - JWT_SECRET='This is secret'
- - password='zazaa1992'
+ - JWT_SECRET=Thisissecret
+ - password=zazaa1992
 services:
   -postgresql
 addons:
