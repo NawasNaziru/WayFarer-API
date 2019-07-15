@@ -75,9 +75,9 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.have.property('status');
                     res.body.data.should.be.a('object');
                     res.body.status.should.be.a('string');
-                    res.body.data.booking_id.should.be.a('number');
+                    res.body.data.id.should.be.a('number');
                     res.body.data.trip_id.should.be.a('number');
-                    //res.body.data.bus_id.should.be.a('number');
+                    res.body.data.bus_id.should.be.a('number');
                     res.body.data.user_id.should.be.a('number');
                     res.body.data.trip_date.should.be.a('string');
                     res.body.data.seat_number.should.be.a('number');
