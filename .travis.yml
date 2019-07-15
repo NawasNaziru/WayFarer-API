@@ -6,4 +6,4 @@ services:
 addons:
   postgresql: "9.6"
 before_install:
-  - psql -u root --password="" < server/models/wayfarer-db.sql
+  - psql < server/models/wayfarer-db.sql
