@@ -18,17 +18,16 @@ const sendJSONresponse = (res, status, content) => {
 };
 
 
-/*const config = {
+const config = {
     user: 'postgres',
     database: 'wayfarer-api-db',
     password: process.env.password,
     port: 5432,
 };
-var pool = new pg.Pool(config);*/
 
-/*if(process.env.NODE_ENV === 'production')*/
+var pool = new pg.Pool(config);
 
-const pool = new pg.Pool({connectionString: process.env.DATABASE_URL, ssl: true,});
+if(process.env.NODE_ENV === 'production') pool = new pg.Pool({connectionString: process.env.DATABASE_URL, ssl: true,});
  console.log(pool);
 
 export const signup = (req, res) => {
@@ -65,13 +64,13 @@ export const signup = (req, res) => {
     }
 
     pool.connect((err, client, done) => {
-        if (err) {
+        /*if (err) {
             sendJSONresponse(res, 501, {
                 status: 'error',
                 error: 'Could not connect to database'
             })
             return;
-        }
+        }*/
         client.query(query).then(responseData => {
             if (responseData.rows.length === 0) {
                 sendJSONresponse(res, 500, {
