@@ -5,5 +5,7 @@ services:
   -postgresql
 addons:
   postgresql: "9.6"
+  jwt: 
+     secure: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8"
 before_install:
   - psql < server/models/wayfarer-db.sql
