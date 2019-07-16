@@ -14,10 +14,10 @@ describe('WayFarer API endpoints', () => {
             chai.request(app).keepOpen()
                 .post('/api/v1/auth/signup')
                 .send({
-                    first_name: 'zinel',
-                    last_name: 'abeed',
-                    email: 'zabeed@outlook.com',
-                    password: 'tycxcv&2',
+                    first_name: 'barry',
+                    last_name: 'waxobia',
+                    email: 'wax@naija.com',
+                    password: 'wxbr123',
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;

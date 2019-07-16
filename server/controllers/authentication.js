@@ -1,4 +1,4 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -97,7 +97,7 @@ export const signup = (req, res) => {
                 }
             })
         }).catch(e => sendJSONresponse(res, 201, {
-            status: 'error',
+            status: 'success',
             data: 'Already signed up. Sign in instead'
         }));
 
