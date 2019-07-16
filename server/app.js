@@ -43,14 +43,19 @@ app.use((req, res, next) => {
 
 // error handlers
 // Catch unauthorised errors e.g. due to altered token.
-app.use((err, req, res) => {
+
+app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
         sendJSONresponse(res, 401, {
             status: 'error',
             error: 'Invalid token'
-        })
+        });
     }
+   else {
+     next(err);
+   }
 });
+
 
 // development error handler
 // will print stacktrace
