@@ -1,4 +1,4 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 import pg from 'pg';
 
@@ -116,10 +116,17 @@ export const createBooking = (req, res) => {
                 });
             }
         });
-    } else {
+    } else if (!req.payload || !req.payload.email) {
         sendJSONresponse(res, 401, {
             status: 'error',
-            error: "User not found. Sign in or sign up again"
+            error: "User session not found. Sign in or sign up again"
+        });
+        return;
+    }
+    else {
+        sendJSONresponse(res, 500, {
+            status: 'error',
+            error: "An error occured. Sign in or sign up again"
         });
         return;
     }
@@ -200,7 +207,7 @@ export const viewBookings = (req, res) => {
             return;
         });
         return;
-    } else {
+    } else if (!req.payload || !req.payload.email) {
         sendJSONresponse(res, 401, {
             status: 'error',
             error: "User not found. Sign in or sign up again"
