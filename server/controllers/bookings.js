@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+﻿import dotenv from 'dotenv';
 dotenv.config();
 import pg from 'pg';
 
@@ -41,13 +41,13 @@ export const createBooking = (req, res) => {
     } 
     else if (req.payload && req.payload.email) {
         pool.connect((err, client, done) => {
-            if (err) {
+            /*if (err) {
                 sendJSONresponse(res, 500, {
                     status: 'error',
                     error: 'Could not connect to database'
                 })
                 return;
-            } else {
+            } */
                 (async () => {
                     try {
                         const usersData = await client.query('SELECT * FROM users where email = $1', [req.payload.email]);
@@ -114,7 +114,7 @@ export const createBooking = (req, res) => {
                         error: err.message
                     });
                 });
-            }
+            
         });
     } else if (!req.payload || !req.payload.email) {
         sendJSONresponse(res, 401, {

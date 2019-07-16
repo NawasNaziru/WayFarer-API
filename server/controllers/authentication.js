@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+﻿import dotenv from 'dotenv';
 dotenv.config();
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -126,13 +126,13 @@ export const signin = (req, res) => {
     }
 
     pool.connect((err, client, done) => {
-        if (err) {
+        /*if (err) {
             sendJSONresponse(res, 501, {
                 status: 'error',
                 error: 'Could not connect to database'
             })
             return;
-        }
+        }*/
 
         client.query('SELECT * FROM users where email = $1', [req.body.email], (err, responseData) => {
             done(); // closing the connection;
