@@ -94,9 +94,18 @@ export const createTrip = (req, res) => {
                                         });
                                         return;
                                     } else {
+                                        
                                         sendJSONresponse(res, 201, {
                                             status: 'success',
-                                            data: tripData.rows[0]
+                                            data: {
+                                                id: tripData.rows[0].trip_id,
+                                                bus_id: tripData.rows[0].bus_id,
+                                                origin: tripData.rows[0].origin,
+                                                destination: tripData.rows[0].destination,
+                                                trip_date: tripData.rows[0].trip_date,
+                                                fare: tripData.rows[0].fare,
+                                                status: tripData.rows[0].status
+                                            }
                                         });
                                         return;
                                     }
@@ -280,7 +289,9 @@ export const cancelTrip = (req, res) => {
                                     } else {
                                         sendJSONresponse(res, 200, {
                                             status: 'success',
-                                            data: 'Trip cancelled successfully'
+                                            data: {
+                                               message: 'Trip cancelled successfully'
+                                            }
                                         });
                                         return;
                                     }

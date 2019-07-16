@@ -1,4 +1,4 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 import pg from 'pg';
 
@@ -89,7 +89,17 @@ export const createBooking = (req, res) => {
                                 } else {
                                     sendJSONresponse(res, 201, {
                                         status: 'success',
-                                        data: bookingData.rows[0]
+                                        data: {
+                                            id: bookingData.rows[0].booking_id,
+                                            user_id: bookingData.rows[0].user_id,
+                                            trip_id: bookingData.rows[0].trip_id,
+                                            bus_id: bookingData.rows[0].bus_id,
+                                            trip_date: bookingData.rows[0].trip_date,
+                                            seat_number: bookingData.rows[0].seat_number,
+                                            first_name: bookingData.rows[0].first_name,
+                                            last_name: bookingData.rows[0].last_name,
+                                            email: bookingData.rows[0].email,
+                                        }
                                     });
                                     return;
                                 }
@@ -106,10 +116,17 @@ export const createBooking = (req, res) => {
                 });
             }
         });
-    } else {
+    } else if (!req.payload || !req.payload.email) {
         sendJSONresponse(res, 401, {
             status: 'error',
-            error: "User not found. Sign in or sign up again"
+            error: "User session not found. Sign in or sign up again"
+        });
+        return;
+    }
+    else {
+        sendJSONresponse(res, 500, {
+            status: 'error',
+            error: "An error occured. Sign in or sign up again"
         });
         return;
     }
@@ -190,7 +207,7 @@ export const viewBookings = (req, res) => {
             return;
         });
         return;
-    } else {
+    } else if (!req.payload || !req.payload.email) {
         sendJSONresponse(res, 401, {
             status: 'error',
             error: "User not found. Sign in or sign up again"
@@ -244,7 +261,9 @@ export const deleteBooking = (req, res) => {
                                 } else {
                                     sendJSONresponse(res, 200, {
                                         status: 'success',
-                                        data: "Booking deleted successfully!"
+                                        data: {
+                                            message: "Booking deleted successfully!"
+                                        }
                                     });
                                     return;
                                 }
@@ -323,7 +342,9 @@ export const changeSeat = (req, res) => {
                                 } else {
                                     sendJSONresponse(res, 201, {
                                         status: 'success',
-                                        data: 'Seat changed successfully'
+                                        data: {
+                                         message: 'Seat changed successfully'
+                                        }
                                     });
                                     return;
                                 }

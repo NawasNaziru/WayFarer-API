@@ -1,4 +1,4 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -27,12 +27,8 @@ const config = {
 
 var pool = new pg.Pool(config);
 
-if(process.env.NODE_ENV === 'production'){
-    pool = new pg.Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: true,
-    })
-  }
+if(process.env.NODE_ENV === 'production') pool = new pg.Pool({connectionString: process.env.DATABASE_URL, ssl: true,});
+  
 
 export const signup = (req, res) => {
 
@@ -97,7 +93,7 @@ export const signup = (req, res) => {
                 }
             })
         }).catch(e => sendJSONresponse(res, 201, {
-            status: 'error',
+            status: 'success',
             data: 'Already signed up. Sign in instead'
         }));
 
