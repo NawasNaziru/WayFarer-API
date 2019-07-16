@@ -18,17 +18,18 @@ const sendJSONresponse = (res, status, content) => {
 };
 
 
-const config = {
+/*const config = {
     user: 'postgres',
     database: 'wayfarer-api-db',
     password: process.env.password,
     port: 5432,
 };
+var pool = new pg.Pool(config);*/
 
-var pool = new pg.Pool(config);
+/*if(process.env.NODE_ENV === 'production')*/
 
-if(process.env.NODE_ENV === 'production') pool = new pg.Pool({connectionString: process.env.DATABASE_URL, ssl: true,});
-  
+const pool = new pg.Pool({connectionString: process.env.DATABASE_URL, ssl: true,});
+ console.log(pool);
 
 export const signup = (req, res) => {
 
