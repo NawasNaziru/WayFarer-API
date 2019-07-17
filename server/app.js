@@ -1,4 +1,4 @@
-require('babel-core');
+require('@babel/core');
 require('babel-polyfill');
 import dotenv from 'dotenv';
 dotenv.config();
