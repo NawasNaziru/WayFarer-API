@@ -1,3 +1,5 @@
+require('babel-core/register');
+require('babel-polyfill');
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
