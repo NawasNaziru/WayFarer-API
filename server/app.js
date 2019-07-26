@@ -1,5 +1,3 @@
-require('@babel/core');
-require('babel-polyfill');
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
@@ -11,13 +9,10 @@ import Debug from 'debug';
 const debug = Debug('Express4');
 
 import router from './routes/index';
+import helper from './controllers/helpers';
 
 const app = express();
 
-const sendJSONresponse = (res, status, content) => {
-    res.status(status);
-    res.json(content);
-};
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -25,11 +20,10 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-
 app.use('/api/v1', router);
 
 app.use((req, res) => {
-    sendJSONresponse(res, 404, {
+    helper.sendJSONresponse(res, 404, {
         status: 'error',
         error: 'No such API exist here!'
     })
@@ -48,7 +42,7 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
-        sendJSONresponse(res, 401, {
+       helper.sendJSONresponse(res, 401, {
             status: 'error',
             error: 'Invalid token'
         });

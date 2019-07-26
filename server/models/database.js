@@ -1,4 +1,4 @@
-require('dotenv').load();
+﻿require('dotenv').load();
 const pg = require('pg');
 const express = require('express');
 
@@ -13,14 +13,7 @@ const config = {
     idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
 
-var pool = new pg.Pool(config);
-
-if(process.env.NODE_ENV === 'production'){
-    pool = new pg.Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: true,
-    })
-  }
+const pool = new pg.Pool(config);
 
 pool.connect((err, client, done) => {
     if (err) {
@@ -28,7 +21,7 @@ pool.connect((err, client, done) => {
         return;
     }
 
-    client.query('CREATE TABLE users(user_id SERIAL PRIMARY KEY, is_admin BOOLEAN not null DEFAULT = $1, email TEXT not null UNIQUE, first_name TEXT not null, last_name TEXT not null, salt TEXT not null UNIQUE, hash TEXT not null UNIQUE)', [false], (err, result) => {
+    client.query('CREATE TABLE users(user_id SERIAL PRIMARY KEY, is_admin BOOLEAN not null DEFAULT false, email TEXT not null UNIQUE, first_name TEXT not null, last_name TEXT not null, salt TEXT not null UNIQUE, hash TEXT not null UNIQUE)', (err, result) => {
         done(); // closing the connection;
         if (err) {
             console.log(err);
@@ -45,7 +38,7 @@ pool.connect((err, client, done) => {
         console.log(result);
     });
 
-    client.query('CREATE TABLE trips(trip_id SERIAL PRIMARY KEY, bus_id INTEGER REFERENCES buses(bus_id) , origin TEXT not null, destination  TEXT not null, trip_date TIMESTAMP not null, fare REAL not null, status TEXT DEFAULT = $1 )', ['active'], (err, result) => {
+    client.query('CREATE TABLE trips(id SERIAL PRIMARY KEY, bus_id INTEGER REFERENCES buses(bus_id) , origin TEXT not null, destination  TEXT not null, trip_date TIMESTAMP not null, fare REAL not null, status TEXT DEFAULT "active" )', (err, result) => {
         done(); // closing the connection;
         if (err) {
             console.log(err);
@@ -53,7 +46,7 @@ pool.connect((err, client, done) => {
         console.log(result);
     });
 
-    client.query('CREATE TABLE bookings(booking_id SERIAL, trip_id INT REFERENCES trips(trip_id), user_id INT REFERENCES users(user_id), seat_number SERIAL, created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id))', (err, result) => {
+    client.query('CREATE TABLE bookings(id SERIAL, trip_id INT REFERENCES trips(id), user_id INT REFERENCES users(user_id), seat_number SERIAL UNIQUE, created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id))', (err, result) => {
         done(); // closing the connection;
         if (err) {
             console.log(err);

@@ -1,182 +1,98 @@
-import dotenv from 'dotenv';
-dotenv.config();
-import jwt from 'jsonwebtoken';
+﻿import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import pg from 'pg';
-import {
-    getMaxListeners
-} from 'cluster';
+import helper from './helpers';
+import db from '../models/index';
 
-const saltRounds = 10;
-const salt = bcrypt.genSaltSync(saltRounds);
+const sendUserData = (req, res, responseData, email, firstName) => {
+            const userId = responseData.rows[0].user_id;
+            const token = helper.generateJwt(userId, email, firstName);
+            helper.sendJSONresponse(res, 201, {
+                status: 'success',
+                data : helper.buildUpResponse(responseData, token)
+            })
+ };
 
-// Predefined generic function for server response in feature modules
+ /* Sign up controller */
+export const signup = async (req, res) => {
 
-const sendJSONresponse = (res, status, content) => {
-    res.status(status);
-    res.json(content);
-};
+    if(helper.fieldsValidator(req, res)) return;
 
-
-const config = {
-    user: 'postgres',
-    database: 'wayfarer-api-db',
-    password: process.env.password,
-    port: 5432,
-};
-
-var pool = new pg.Pool(config);
-
-if(process.env.NODE_ENV === 'production') pool = new pg.Pool({connectionString: process.env.DATABASE_URL, ssl: true,});
-  
-
-export const signup = (req, res) => {
-
-    if (!req.body.first_name || !req.body.last_name || !req.body.email || !req.body.password) {
-        sendJSONresponse(res, 400, {
-            status: 'error',
-            error: 'Requires your first name, last name, email and password!',
-        });
-        return;
-    }
-
-    const generateJwt = id => {
-        const expiry = new Date();
-        expiry.setDate(expiry.getDate() + 27);
-
-        return jwt.sign({
-            _id: id,
-            email: req.body.email,
-            name: req.body.firstName,
-            exp: parseInt((expiry.getTime() / 1000), 10),
-        }, process.env.JWT_SECRET); // DO NOT KEEP YOUR SECRET IN THE CODE!
-    };
-
+    const salt = helper.getSalt();
     const hash = bcrypt.hashSync(req.body.password, salt);
-
     const firstName = req.body.first_name;
     const lastName = req.body.last_name;
     const email = req.body.email;
 
-    const query = {
-        text: 'INSERT INTO users(email, first_name, last_name, salt, hash) VALUES( $1, $2, $3, $4, $5) RETURNING *',
-        values: [email, firstName, lastName, salt, hash]
-    }
+    const userCreateQuery = 'INSERT INTO users(email, first_name, last_name, salt, hash) VALUES( $1, $2, $3, $4, $5) RETURNING *';
+    const userInfo = [email, firstName, lastName, salt, hash];
 
-    pool.connect((err, client, done) => {
-        if (err) {
-            sendJSONresponse(res, 501, {
-                status: 'error',
-                error: 'Could not connect to database'
-            })
-            return;
-        }
-        client.query(query).then(responseData => {
+        try {            
+            const responseData = await db.query(userCreateQuery, userInfo);           
             if (responseData.rows.length === 0) {
-                sendJSONresponse(res, 500, {
+                helper.sendJSONresponse(res, 404, {
                     status: 'error',
-                    error: 'Unsuccessful. Try again!'
+                    error: "Unsuccessful. Try again!"
                 });
                 return;
             }
-            const userId = responseData.rows[0].user_id;
-            const token = generateJwt(userId);
-            sendJSONresponse(res, 201, {
-                status: 'success',
-                data: {
-                    user_id: responseData.rows[0].user_id,
-                    is_admin: responseData.rows[0].is_admin,
-                    token: token,
-                    email: responseData.rows[0].email,
-                    first_name: responseData.rows[0].first_name,
-                    last_name: responseData.rows[0].last_name,
-                }
-            })
-        }).catch(e => sendJSONresponse(res, 201, {
-            status: 'success',
-            data: 'Already signed up. Sign in instead'
-        }));
-
-    });
-}
-
-export const signin = (req, res) => {
-    if (!req.body.email || !req.body.password) {
-        sendJSONresponse(res, 400, {
-            status: 'error',
-            error: 'Requires your email and password',
-        });
-        return;
-    }
-
-    const generateJwt = id => {
-        const expiry = new Date();
-        expiry.setDate(expiry.getDate() + 27);
-
-        return jwt.sign({
-            _id: id,
-            email: req.body.email,
-            name: req.body.firstName,
-            exp: parseInt((expiry.getTime() / 1000), 10),
-        }, process.env.JWT_SECRET); // DO NOT KEEP YOUR SECRET IN THE CODE!
-    };
-
-    const isValidPassword = (password, storedHash, storedSalt) => {
-        return bcrypt.hashSync(password, storedSalt) === storedHash;
-    }
-
-    pool.connect((err, client, done) => {
-        if (err) {
-            sendJSONresponse(res, 501, {
-                status: 'error',
-                error: 'Could not connect to database'
-            })
-            return;
+          sendUserData(req, res, responseData, email, firstName);
         }
-
-        client.query('SELECT * FROM users where email = $1', [req.body.email], (err, responseData) => {
-            done(); // closing the connection;
-            if (err) {
-                sendJSONresponse(res, 500, {
-                    status: 'error',
-                    error: err.message
+        catch(err){
+          helper.sendJSONresponse(res, 201, {
+            status: 'Success',
+            data: {
+               message: "This email has already been registered. Choose other one!"
+            }
                 })
                 return;
-            }
-            if (responseData.rows.length === 0) {
-                sendJSONresponse(res, 404, {
-                    status: 'error',
-                    error: "Invalid email. User not found. Sign up first!"
-                });
-                return;
-            }
+            
+        }
+    
+}
 
+const sendLoggedInUserData = (req, res, responseData) => {
             const userId = responseData.rows[0].user_id;
-            const token = generateJwt(userId);
+            const token = helper.generateJwt(userId, req.body.email, req.body.first_name);
 
             const savedSalt = responseData.rows[0].salt;
             const savedHash = responseData.rows[0].hash;
 
-            if (!isValidPassword(req.body.password, savedHash, savedSalt)) {
-                sendJSONresponse(res, 404, {
+            if (!helper.isValidPassword(req.body.password, savedHash, savedSalt)) {
+                helper.sendJSONresponse(res, 404, {
                     status: 'error',
                     error: "Invalid password. Provide your correct password"
                 });
                 return;
             }
 
-            sendJSONresponse(res, 200, {
+            helper.sendJSONresponse(res, 200, {
                 status: 'success',
-                data: {
-                    user_id: responseData.rows[0].user_id,
-                    is_admin: responseData.rows[0].is_admin,
-                    token: token,
-                    email: responseData.rows[0].email,
-                    first_name: responseData.rows[0].first_name,
-                    last_name: responseData.rows[0].last_name,
-                }
-            })
-        });
-    });
+                data : helper.buildUpResponse(responseData, token)
+            }) ;
+}
 
-};
+/* Sign in controller */
+export const signin = async (req, res) => {
+    if(helper.fieldsValidator(req, res)) return;
+    const userSelectQuery = 'SELECT * FROM users where email = $1';
+    const  userInfo = [req.body.email];
+      try{
+       const responseData = await db.query(userSelectQuery, userInfo);       
+            if (responseData.rows.length === 0) {
+                helper.sendJSONresponse(res, 404, {
+                    status: 'error',
+                    error: "Invalid email. Sign up first!"
+                });
+                return;
+            }
+            sendLoggedInUserData(req, res, responseData);
+        }
+        catch(err){
+            helper.sendJSONresponse(res, 501, {
+              status: 'error',
+              data: "User not found!"
+                  })
+                  return;
+              
+          }
+}

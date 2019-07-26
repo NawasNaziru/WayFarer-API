@@ -1,42 +1,37 @@
-﻿import dotenv from 'dotenv';
-dotenv.config();
-import express from 'express';
-import jwt from 'express-jwt';
-const router = express.Router();
-
-const auth = jwt({
-    secret: process.env.JWT_SECRET,
-    userProperty: 'payload'
-});
-
+﻿import express from 'express';
 import * as ctrlAuth from '../controllers/authentication';
-
 import * as ctrlTrips from '../controllers/trips';
-
 import * as ctrlBookings from '../controllers/bookings';
-
 import * as ctrlDocs from '../controllers/docs';
+import auth from '../controllers/middleware';
+import { check, validationResult } from 'express-validator';
+
+const router = express.Router();
 
 // api documentation route
 router.get('/docs', ctrlDocs.docV1);
 
 // signup route
-
-router.post('/auth/signup', ctrlAuth.signup);
+const signupfields = [check('first_name').not().isEmpty(), check('last_name').not().isEmpty(), check('email').not().isEmpty(), check('password').isLength({min: 1}).not().isEmpty()];
+router.post('/auth/signup', signupfields, ctrlAuth.signup);
 
 // sign in route
-router.post('/auth/signin', ctrlAuth.signin);
+const signinfields = [check('email').not().isEmpty(), check('password').isLength({min: 1}).not().isEmpty()];
+router.post('/auth/signin', signinfields, ctrlAuth.signin);
 
 // trips routes
-router.post('/trips', auth, ctrlTrips.createTrip);
+const tripCreationfields = [check('destination').not().isEmpty(), check('origin').not().isEmpty(), check('trip_date').not().isEmpty(), check('fare').not().isEmpty(), check('bus_id').not().isEmpty()];
+router.post('/trips', auth, tripCreationfields, ctrlTrips.createTrip);
 router.get('/trips', auth, ctrlTrips.viewAllTrips);
 router.patch('/trips/:tripId', auth, ctrlTrips.cancelTrip);
 
 // bookings routes
-router.post('/bookings', auth, ctrlBookings.createBooking);
+const bookingCreationfield = [check('trip_id').not().isEmpty()];
+router.post('/bookings', auth, bookingCreationfield, ctrlBookings.createBooking);
 router.get('/bookings', auth, ctrlBookings.viewBookings);
 router.delete('/bookings/:bookingId', auth, ctrlBookings.deleteBooking);
-router.patch('/bookings/:bookingId', auth, ctrlBookings.changeSeat);
+const changeSeatfield = [check('seat_number').not().isEmpty()];
+router.patch('/bookings/:bookingId', auth, changeSeatfield, ctrlBookings.changeSeat);
 
 
 export default router;
