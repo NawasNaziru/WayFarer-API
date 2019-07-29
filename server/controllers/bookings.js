@@ -298,7 +298,7 @@ const proceedToChangeSeat = async (req, res, userData) => {
     });
     return;
     } else {
-    helper.sendJSONresponse(res, 201, {
+    helper.sendJSONresponse(res, 200, {
         status: 'success',
         data: {
          message: 'Seat changed successfully'
