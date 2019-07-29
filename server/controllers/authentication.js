@@ -1,4 +1,5 @@
-﻿import jwt from 'jsonwebtoken';
+﻿import "@babel/polyfill";
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import helper from './helpers';
 import db from '../models/index';

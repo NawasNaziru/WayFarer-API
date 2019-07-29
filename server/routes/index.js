@@ -1,4 +1,5 @@
-﻿import express from 'express';
+﻿import "@babel/polyfill";
+import express from 'express';
 import * as ctrlAuth from '../controllers/authentication';
 import * as ctrlTrips from '../controllers/trips';
 import * as ctrlBookings from '../controllers/bookings';
