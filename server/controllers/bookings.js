@@ -24,7 +24,7 @@ const getAndsendInsertedBooking = async (req, res) => {
   }
     catch(err){
         helper.sendJSONresponse(res, 501, {
-          status: 'Success',
+          status: 'error',
           error: "Not found!"
               })
               return;
@@ -54,8 +54,8 @@ const insertAndSendBooking = async (req, res) => {
     }
   } catch(err){
     helper.sendJSONresponse(res, 501, {
-      status: 'Success',
-      error: "The trip with that id does not exist"
+      status: 'error',
+      error: "You already booked a seat on this trip!"
           })
           return;
       
