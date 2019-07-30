@@ -64,7 +64,7 @@ describe('WayFarer API endpoints', () => {
                 .post('/api/v1/bookings')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .send({
-                    trip_id: 1,
+                    trip_id: 2,
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -93,10 +93,10 @@ describe('WayFarer API endpoints', () => {
 
         it('Should change seat for user', (done) => {
             chai.request(app).keepOpen()
-                .patch('/api/v1/bookings/1')
+                .patch('/api/v1/bookings/2')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .send({
-                    seat_number: 2,
+                    seat_number: 11,
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -116,7 +116,7 @@ describe('WayFarer API endpoints', () => {
 
         it('Should delete booking', (done) => {
             chai.request(app).keepOpen()
-                .delete('/api/v1/bookings/1')
+                .delete('/api/v1/bookings/2')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -146,7 +146,7 @@ describe('WayFarer API endpoints', () => {
                     trip_date: '08-08-2019',
                     fare: 20080.95,
                     status: 'cancelled',
-                    bus_id: 1
+                    bus_id: 2
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -169,7 +169,7 @@ describe('WayFarer API endpoints', () => {
 
         it('Should cancel a trip', (done) => {
             chai.request(app).keepOpen()
-                .patch('/api/v1/trips/1')
+                .patch('/api/v1/trips/2')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .end((err, res) => {
                     expect(err).to.be.null;
