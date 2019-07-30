@@ -106,9 +106,9 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.have.property('data');
                     res.body.should.have.property('status');
                     res.body.status.should.be.a('string');
-                    res.body.data.should.be.a('string');
+                    res.body.data.should.be.a('object');
                     res.body.status.should.equal('success');
-                    res.body.data.should.equal('Seat changed successfully!');
+                    res.body.data.message.should.equal('Seat changed successfully!');
                 });
 
             done();
@@ -126,9 +126,9 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.have.property('data');
                     res.body.should.have.property('status');
                     res.body.status.should.be.a('string');
-                    res.body.data.should.be.a('string');
+                    res.body.data.should.be.a('object');
                     res.body.status.should.equal('success');
-                    res.body.data.should.equal('Booking deleted successfully!');
+                    res.body.data.message.should.equal('Booking deleted successfully!');
                 });
 
             done();
@@ -179,9 +179,9 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.have.property('data');
                     res.body.should.have.property('status');
                     res.body.status.should.be.a('string');
-                    res.body.data.should.be.a('string');
+                    res.body.data.should.be.a('object');
                     res.body.status.should.equal('success');
-                    res.body.data.should.equal('Trip cancelled successfully!');
+                    res.body.data.message.should.equal('Trip cancelled successfully!');
                 });
 
             done();
