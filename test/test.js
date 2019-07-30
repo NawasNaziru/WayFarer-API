@@ -146,7 +146,7 @@ describe('WayFarer API endpoints', () => {
                     trip_date: '08-08-2019',
                     fare: 20080.95,
                     status: 'cancelled',
-                    bus_id: 2
+                    bus_id: 1
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
