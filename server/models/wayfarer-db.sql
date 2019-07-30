@@ -5,6 +5,6 @@ CREATE TABLE trips(id SERIAL PRIMARY KEY, bus_id INTEGER REFERENCES buses(bus_id
 CREATE TABLE bookings(id SERIAL, trip_id INT REFERENCES trips(id), user_id INT REFERENCES users(user_id), seat_number SERIAL UNIQUE, created_on  TIMESTAMP not null, PRIMARY KEY (trip_id, user_id));
 INSERT INTO users(is_admin, email, first_name, last_name, salt, hash) VALUES(true, 'zabeed@outlook.com', 'zinel', 'abeed', '$2b$10$E2b5fl4RcZy0zg2WHxHLbO', '$2b$10$E2b5fl4RcZy0zg2WHxHLbOVU.2GaO9KXzxbvHCH7dgiBXLR.YbF7m');
 INSERT INTO buses(number_plate, manufacturer, model, year, capacity) VALUES('H23652', 'Benz', 'Buccati', '2019', 7);
-INSERT INTO trips(bus_id, origin, destination, trip_date, fare ) VALUES(2, 'Lagos', 'Abuja', '2019-07-29', 20050.89);
-INSERT INTO bookings(trip_id, user_id, seat_number, created_on) VALUES(1, 2, 1, '2019-07-29');
+INSERT INTO trips(bus_id, origin, destination, trip_date, fare ) VALUES(1, 'Lagos', 'Abuja', '2019-07-29', 20050.89);
+INSERT INTO bookings(trip_id, user_id, seat_number, created_on) VALUES(1, 1, 1, '2019-07-29');
 COMMIT;
