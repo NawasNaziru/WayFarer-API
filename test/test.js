@@ -64,7 +64,7 @@ describe('WayFarer API endpoints', () => {
                 .post('/api/v1/bookings')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .send({
-                    trip_id: 2,
+                    trip_id: 1,
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
