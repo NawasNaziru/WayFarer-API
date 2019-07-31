@@ -169,7 +169,7 @@ describe('WayFarer API endpoints', () => {
 
         it('Should cancel a trip', (done) => {
             chai.request(app).keepOpen()
-                .patch('/api/v1/trips/2')
+                .patch('/api/v1/trips/1')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .end((err, res) => {
                     expect(err).to.be.null;
