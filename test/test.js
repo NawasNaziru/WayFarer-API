@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import assert from 'assert';
 import chai from 'chai';
 const should = chai.should();
@@ -63,8 +64,7 @@ describe('WayFarer API endpoints', () => {
                 .post('/api/v1/bookings')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .send({
-                    trip_id: 63,
-                    seat_number: 20,
+                    trip_id: 1,
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -93,10 +93,10 @@ describe('WayFarer API endpoints', () => {
 
         it('Should change seat for user', (done) => {
             chai.request(app).keepOpen()
-                .patch('/api/v1/bookings/56')
+                .patch('/api/v1/bookings/1')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .send({
-                    seat_number: 20,
+                    seat_number: 11,
                 })
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -106,9 +106,9 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.have.property('data');
                     res.body.should.have.property('status');
                     res.body.status.should.be.a('string');
-                    res.body.data.should.be.a('string');
+                    res.body.data.should.be.a('object');
                     res.body.status.should.equal('success');
-                    res.body.data.should.equal('Seat changed successfully!');
+                    res.body.data.message.should.equal('Seat changed successfully!');
                 });
 
             done();
@@ -116,7 +116,7 @@ describe('WayFarer API endpoints', () => {
 
         it('Should delete booking', (done) => {
             chai.request(app).keepOpen()
-                .delete('/api/v1/bookings/46')
+                .delete('/api/v1/bookings/1')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -126,9 +126,9 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.have.property('data');
                     res.body.should.have.property('status');
                     res.body.status.should.be.a('string');
-                    res.body.data.should.be.a('string');
+                    res.body.data.should.be.a('object');
                     res.body.status.should.equal('success');
-                    res.body.data.should.equal('Booking deleted successfully!');
+                    res.body.data.message.should.equal('Booking deleted successfully!');
                 });
 
             done();
@@ -169,7 +169,7 @@ describe('WayFarer API endpoints', () => {
 
         it('Should cancel a trip', (done) => {
             chai.request(app).keepOpen()
-                .patch('/api/v1/trips/46')
+                .patch('/api/v1/trips/1')
                 .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjI4LCJlbWFpbCI6InphYmVlZEBvdXRsb29rLmNvbSIsImV4cCI6MTU2NDY4MDc4OCwiaWF0IjoxNTYyMzQ3OTg4fQ.r_knuY68jJQhaOh_cfyWB9U7YoGsaQmxYoU39XCkiz8')
                 .end((err, res) => {
                     expect(err).to.be.null;
@@ -179,9 +179,9 @@ describe('WayFarer API endpoints', () => {
                     res.body.should.have.property('data');
                     res.body.should.have.property('status');
                     res.body.status.should.be.a('string');
-                    res.body.data.should.be.a('string');
+                    res.body.data.should.be.a('object');
                     res.body.status.should.equal('success');
-                    res.body.data.should.equal('Trip cancelled successfully!');
+                    res.body.data.message.should.equal('Trip cancelled successfully!');
                 });
 
             done();

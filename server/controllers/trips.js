@@ -1,4 +1,5 @@
-﻿import helper from './helpers';
+﻿import "@babel/polyfill";
+import helper from './helpers';
 import db from '../models/index';
 
 const tripBus = async (req, res, busId) => {

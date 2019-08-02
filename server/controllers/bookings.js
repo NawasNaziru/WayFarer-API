@@ -1,4 +1,5 @@
-﻿import helper from './helpers';
+﻿import "@babel/polyfill";
+import helper from './helpers';
 import db from '../models/index';
 
 const getAndsendInsertedBooking = async (req, res) => {
@@ -23,7 +24,7 @@ const getAndsendInsertedBooking = async (req, res) => {
   }
     catch(err){
         helper.sendJSONresponse(res, 501, {
-          status: 'Success',
+          status: 'error',
           error: "Not found!"
               })
               return;
@@ -53,8 +54,8 @@ const insertAndSendBooking = async (req, res) => {
     }
   } catch(err){
     helper.sendJSONresponse(res, 501, {
-      status: 'Success',
-      error: "The trip with that id does not exist"
+      status: 'error',
+      error: "You already booked a seat on this trip!"
           })
           return;
       
@@ -297,10 +298,10 @@ const proceedToChangeSeat = async (req, res, userData) => {
     });
     return;
     } else {
-    helper.sendJSONresponse(res, 201, {
+    helper.sendJSONresponse(res, 200, {
         status: 'success',
         data: {
-         message: 'Seat changed successfully'
+         message: 'Seat changed successfully!'
         }
     });
     return;
