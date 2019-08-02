@@ -1,4 +1,5 @@
-﻿require('dotenv').load();
+﻿import "@babel/polyfill";
+require('dotenv').load();
 const pg = require('pg');
 const express = require('express');
 
